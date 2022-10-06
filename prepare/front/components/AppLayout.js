@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import Link from "next/link";
 import styled from "styled-components";
@@ -24,18 +25,16 @@ const items = [
 ];
 
 const AppLayout = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn } = useSelector((state) => state.user);
+  console.log("isLoggedIn", isLoggedIn);
+
   return (
     <div>
       <Menu items={items} mode="horizontal" />
       {children}
       <Row gutter={8}>
         <Col xs={24} md={6}>
-          {isLoggedIn ? (
-            <UserProfile setIsLoggedIn={setIsLoggedIn} />
-          ) : (
-            <LoginForm setIsLoggedIn={setIsLoggedIn} />
-          )}
+          {isLoggedIn ? <UserProfile /> : <LoginForm />}
           왼쪽 메뉴
         </Col>
         <Col xs={24} md={12}>
