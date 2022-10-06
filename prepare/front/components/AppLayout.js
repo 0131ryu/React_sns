@@ -31,14 +31,14 @@ const AppLayout = ({ children }) => {
   return (
     <div>
       <Menu items={items} mode="horizontal" />
-      {children}
+
       <Row gutter={8}>
         <Col xs={24} md={6}>
           {isLoggedIn ? <UserProfile /> : <LoginForm />}
           왼쪽 메뉴
         </Col>
         <Col xs={24} md={12}>
-          테스트
+          {children}
         </Col>
         <Col xs={24} md={6}>
           <Button
