@@ -6,7 +6,7 @@ export const initialState = {
         id: 1,
         nickname: "제로초",
       },
-      content: "첫 번째 게시글 #해시태그 #익스프레스",
+      content: "첫 번째 게시글",
       Images: [
         {
           src: "https://bookthumb-phinf.pstatic.net/cover/137/995/13799585.jpg?udate=20180726",
@@ -21,9 +21,15 @@ export const initialState = {
       Comments: [
         {
           User: {
-            nickanme: "nero",
+            nickname: "nero",
           },
-          content: "안녕하세요",
+          content: "우와 개정판이 나왔군요~",
+        },
+        {
+          User: {
+            nickname: "hero",
+          },
+          content: "얼른 사고싶어요~",
         },
       ],
     },
@@ -33,6 +39,7 @@ export const initialState = {
 };
 
 const ADD_POST = "ADD_POST";
+
 export const addPost = {
   type: ADD_POST,
 };
@@ -48,7 +55,7 @@ const dummyPost = {
   Comments: [],
 };
 
-const reducer = (state = initialState, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
     case ADD_POST: {
       return {
@@ -57,10 +64,10 @@ const reducer = (state = initialState, action) => {
         postAdded: true,
       };
     }
-
-    default:
-      return state;
+    default: {
+      return {
+        ...state,
+      };
+    }
   }
 };
-
-export default reducer;
