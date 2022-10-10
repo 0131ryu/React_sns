@@ -7,6 +7,22 @@ import { Menu, Input, Row, Col, Button } from "antd";
 const { Search } = Input;
 import UserProfile from "./UserProfile";
 import LoginForm from "./LoginForm";
+import { createGlobalStyle } from "styled-components";
+
+const Global = createGlobalStyle`
+.ant-row {
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+}
+
+.ant-col:first-child {
+    padding-left: 0 !important;
+}
+
+.ant-col:last-child {
+  padding-right: 0 !important;
+}
+`;
 
 const SearchInput = styled(Search)`
   vertical-align: "middle";
@@ -30,6 +46,7 @@ const AppLayout = ({ children }) => {
 
   return (
     <div>
+      <Global />
       <Menu items={items} mode="horizontal" />
 
       <Row gutter={8}>
