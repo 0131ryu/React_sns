@@ -11,6 +11,7 @@ import { Card, Popover, Button, Avatar, List, Comment } from "antd";
 import { useSelector } from "react-redux";
 import PostImages from "./PostImages";
 import CommentForm from "./CommentForm";
+import PostCardContent from "./PostCardContent";
 
 const PostCard = ({ post }) => {
   const [liked, setLiked] = useState(false);
@@ -63,7 +64,7 @@ const PostCard = ({ post }) => {
         <Card.Meta
           avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
           title={post.User.nickname}
-          description={post.content}
+          description={<PostCardContent postData={post.content} />}
         />
       </Card>
       {commentFormOpened && (
@@ -94,12 +95,12 @@ const PostCard = ({ post }) => {
 PostCard.propTypes = {
   post: PropTypes.shape({
     id: PropTypes.number,
-    USer: PropTypes.object,
+    User: PropTypes.object,
     content: PropTypes.string,
-    createAt: PropTypes.object,
-    Comments: PropTypes.arrayOf(PropTypes.object),
-    Images: PropTypes.arrayOf(PropTypes.object),
-  }).isRequired,
+    createdAt: PropTypes.object,
+    Comments: PropTypes.arrayOf(PropTypes.any),
+    Images: PropTypes.arrayOf(PropTypes.any),
+  }),
 };
 
 export default PostCard;
