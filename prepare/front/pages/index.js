@@ -1,7 +1,10 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import AppLayout from "../components/AppLayout";
 
+// import { loginAction, logoutAction } from "../store/userSlice";
+// import { wrapper } from "../store/store";
+
+import AppLayout from "../components/AppLayout";
 import PostForm from "../components/PostForm";
 import PostCard from "../components/PostCard";
 
