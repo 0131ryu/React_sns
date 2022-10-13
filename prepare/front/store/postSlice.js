@@ -56,8 +56,8 @@ export const postSlice = createSlice({
   initialState,
   reducers: {
     addPost: (state, action) => {
-      (state.post = [...state.mainPosts, state.post.mainPosts(dummyPost)]),
-        (state.post.postAdded = true);
+      (state.mainPosts = [...state.mainPosts, dummyPost]),
+        (state.postAdded = true);
     },
   },
 });

@@ -5,7 +5,8 @@ import styled from "styled-components";
 
 import useInput from "../hooks/useInput";
 import { useDispatch } from "react-redux";
-import { loginAction } from "../reducers/user";
+// import { loginAction } from "../reducers/user";
+import { loginAction } from "../store/userSlice";
 
 const ButtonWrapper = styled.div`
   margin-top: 10px;
