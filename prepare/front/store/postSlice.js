@@ -51,12 +51,15 @@ const dummyPost = {
   Comments: [],
 };
 
+//dummyData를 앞에 추가해야 함
+
 export const postSlice = createSlice({
   name: "post",
   initialState,
   reducers: {
     addPost: (state, action) => {
-      (state.mainPosts = [...state.mainPosts, dummyPost]),
+      (state.mainPosts = [...state.mainPosts]),
+        state.mainPosts.push(action.payload),
         (state.postAdded = true);
     },
   },

@@ -4,6 +4,17 @@ import { useDispatch, useSelector } from "react-redux";
 // import { addPost } from "../reducers/post";
 import { addPost } from "../store/postSlice";
 
+const dummyPost = {
+  id: 2,
+  content: "더미데이터입니다.",
+  User: {
+    id: 1,
+    nickname: "제로초",
+  },
+  Images: [],
+  Comments: [],
+};
+
 const PostForm = () => {
   const { imagePaths } = useSelector((state) => state.post);
   const dispatch = useDispatch();
@@ -13,7 +24,7 @@ const PostForm = () => {
     setText(e.target.value);
   }, []);
   const onSubmit = useCallback(() => {
-    dispatch(addPost);
+    dispatch(addPost(dummyPost));
     setText("");
   }, []);
 
