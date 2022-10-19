@@ -59,7 +59,9 @@
         <!-- progress  indicator container -->
         <div class="mt-8 text-center">
           <div class="h-1 w-12 bg-gray-800 rounded-full mx-auto"></div>
-          <p class="font-bold text-gray-800">2/10</p>
+          <p class="font-bold text-gray-800">
+            {{ questionCounter }}/{{ questions.length }}
+          </p>
         </div>
       </div>
     </div>
@@ -82,7 +84,10 @@ import { onMounted, ref } from "vue";
 
 export default {
   setup() {
+    let canClick = true;
+
     let questionCounter = ref(0);
+    let score = ref(0);
     const currentQuestion = ref({
       question: "",
       answer: 1,
@@ -112,6 +117,21 @@ export default {
         ],
       },
     ];
+
+    const loadQuestion = () => {
+      canClick = true;
+      // Check if there are more questions to load
+      if (questions.length > questionCounter.value) {
+        // load question
+        currentQuestion.value = questions[questionCounter.value];
+        console.log("Current questions", currentQuestion.value);
+        questionCounter.value++;
+      } else {
+        // no more questions
+        console.log("Out of questions");
+      }
+    };
+
     const onQuizStart = () => {
       currentQuestion.value = questions[questionCounter.value];
     };
@@ -122,20 +142,37 @@ export default {
         itemsRef.push(element);
       }
     };
+
+    const clearSelected = (divSelected) => {
+      setTimeout(() => {
+        divSelected.classList.remove("option-correct");
+        divSelected.classList.remove("option-wrong");
+        divSelected.classList.add("option-default");
+        loadQuestion();
+      }, 1000);
+    };
+
     const onOptionClicked = (choice, item) => {
       // console.log(itemsRef[item]);
-      const divContainer = itemsRef[item];
-      const optionID = item + 1;
-      if (currentQuestion.value.answer === optionID) {
-        console.log("your are correct");
-        divContainer.classList.add("option-correct");
-        divContainer.classList.remove("option-default");
+      if (canClick) {
+        const divContainer = itemsRef[item];
+        const optionID = item + 1;
+        if (currentQuestion.value.answer === optionID) {
+          console.log("your are correct");
+          divContainer.classList.add("option-correct");
+          divContainer.classList.remove("option-default");
+        } else {
+          console.log("you are wrong");
+          divContainer.classList.add("option-wrong");
+          divContainer.classList.remove("option-default");
+        }
+        canClick = false;
+        // TODO go to next question
+        clearSelected(divContainer);
+        console.log(choice, item);
       } else {
-        console.log("you are wrong");
-        divContainer.classList.add("option-wrong");
-        divContainer.classList.remove("option-default");
+        console.log("can't select question");
       }
-      console.log(choice, item);
     };
 
     onMounted(() => {
@@ -145,7 +182,9 @@ export default {
     return {
       currentQuestion,
       questions,
+      score,
       questionCounter,
+      loadQuestion,
       onOptionClicked,
       optionChosen,
     };
