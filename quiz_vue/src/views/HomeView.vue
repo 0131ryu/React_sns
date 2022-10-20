@@ -1,5 +1,8 @@
 <template>
   <main class="flex h-screen items-center justify-center bg-gray-100">
+    <!-- quiz overlay -->
+    <QuizCompleteOverlay v-if="endOfQuiz"></QuizCompleteOverlay>
+
     <div
       class="overflow-hidden bg-white flex-none container relative shadow-lg rounded-lg px-12 py-6"
     >
@@ -18,7 +21,10 @@
         </div>
         <!-- timer container -->
         <div class="bg-white shadow-lg p-1 rounded-full w-full h-5 mt-4">
-          <div class="bg-blue-700 rounded-full w-11/12 h-full"></div>
+          <div
+            class="bg-blue-700 rounded-full w-11/12 h-full"
+            :style="`width:${timer}%`"
+          ></div>
         </div>
 
         <div
@@ -81,11 +87,13 @@
 
 <script>
 import { onMounted, ref } from "vue";
+import QuizCompleteOverlay from "./components/QuizCompleteOverlay.vue";
 
 export default {
   setup() {
     let canClick = true;
-
+    let timer = ref(100);
+    let endOfQuiz = ref(false);
     let questionCounter = ref(0);
     let score = ref(0);
     const currentQuestion = ref({
@@ -93,7 +101,6 @@ export default {
       answer: 1,
       choices: [],
     });
-
     const questions = [
       {
         question:
@@ -117,32 +124,30 @@ export default {
         ],
       },
     ];
-
     const loadQuestion = () => {
       canClick = true;
       // Check if there are more questions to load
       if (questions.length > questionCounter.value) {
         // load question
+        timer.value = 100;
         currentQuestion.value = questions[questionCounter.value];
         console.log("Current questions", currentQuestion.value);
         questionCounter.value++;
       } else {
         // no more questions
+        endOfQuiz.value = true;
         console.log("Out of questions");
       }
     };
-
     // const onQuizStart = () => {
     //   currentQuestion.value = questions[questionCounter.value];
     // };
-
     let itemsRef = [];
     const optionChosen = (element) => {
       if (element) {
         itemsRef.push(element);
       }
     };
-
     //new questions
     const clearSelected = (divSelected) => {
       setTimeout(() => {
@@ -152,7 +157,6 @@ export default {
         loadQuestion();
       }, 1000); //1초마다 바뀜
     };
-
     const onOptionClicked = (choice, item) => {
       // console.log(itemsRef[item]);
       if (canClick) {
@@ -169,21 +173,33 @@ export default {
           divContainer.classList.add("option-wrong");
           divContainer.classList.remove("option-default");
         }
+        timer.value = 100;
         canClick = false; //답안 한 개만 고르게 함
         // TODO go to next question
         clearSelected(divContainer); //답안 눌렀을 때 해당 함수 실행
         console.log(choice, item);
       } else {
-        console.log("can't select question");
+        // endOfQuiz.value = true;
+        console.log("Out of questions");
       }
     };
-
+    const countDwonTimer = function () {
+      let interVal = setInterval(() => {
+        if (timer.value > 0) {
+          timer.value--;
+        } else {
+          console.log("timer is up");
+          clearInterval(interVal);
+        }
+      }, 150);
+    };
     onMounted(() => {
       // onQuizStart();
       loadQuestion();
+      countDwonTimer();
     });
-
     return {
+      timer,
       currentQuestion,
       questions,
       score,
@@ -191,7 +207,11 @@ export default {
       loadQuestion,
       onOptionClicked,
       optionChosen,
+      endOfQuiz,
     };
+  },
+  components: {
+    QuizCompleteOverlay,
   },
 };
 </script>
