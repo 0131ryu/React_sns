@@ -14,7 +14,7 @@
         <!-- score container -->
         <div class="text-right text-gray-800">
           <p class="text-sm leading-3">Score</p>
-          <p class="font-bold">60</p>
+          <p class="font-bold">{{ score }}</p>
         </div>
         <!-- timer container -->
         <div class="bg-white shadow-lg p-1 rounded-full w-full h-5 mt-4">
@@ -132,9 +132,9 @@ export default {
       }
     };
 
-    const onQuizStart = () => {
-      currentQuestion.value = questions[questionCounter.value];
-    };
+    // const onQuizStart = () => {
+    //   currentQuestion.value = questions[questionCounter.value];
+    // };
 
     let itemsRef = [];
     const optionChosen = (element) => {
@@ -143,22 +143,25 @@ export default {
       }
     };
 
+    //new questions
     const clearSelected = (divSelected) => {
       setTimeout(() => {
         divSelected.classList.remove("option-correct");
         divSelected.classList.remove("option-wrong");
         divSelected.classList.add("option-default");
         loadQuestion();
-      }, 1000);
+      }, 1000); //1초마다 바뀜
     };
 
     const onOptionClicked = (choice, item) => {
       // console.log(itemsRef[item]);
       if (canClick) {
+        //TODO seelct on option
         const divContainer = itemsRef[item];
         const optionID = item + 1;
         if (currentQuestion.value.answer === optionID) {
           console.log("your are correct");
+          score.value += 10;
           divContainer.classList.add("option-correct");
           divContainer.classList.remove("option-default");
         } else {
@@ -166,9 +169,9 @@ export default {
           divContainer.classList.add("option-wrong");
           divContainer.classList.remove("option-default");
         }
-        canClick = false;
+        canClick = false; //답안 한 개만 고르게 함
         // TODO go to next question
-        clearSelected(divContainer);
+        clearSelected(divContainer); //답안 눌렀을 때 해당 함수 실행
         console.log(choice, item);
       } else {
         console.log("can't select question");
@@ -176,7 +179,8 @@ export default {
     };
 
     onMounted(() => {
-      onQuizStart();
+      // onQuizStart();
+      loadQuestion();
     });
 
     return {
