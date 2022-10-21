@@ -1,7 +1,11 @@
 <template>
   <main class="flex h-screen items-center justify-center bg-gray-100">
     <!-- quiz overlay -->
-    <QuizCompleteOverlay v-if="endOfQuiz"></QuizCompleteOverlay>
+    <QuizCompleteOverlay
+      v-if="endOfQuiz"
+      :percent="percentageScore"
+      @restartQuiz="onQuizStart"
+    ></QuizCompleteOverlay>
 
     <div
       class="overflow-hidden bg-white flex-none container relative shadow-lg rounded-lg px-12 py-6"
@@ -33,7 +37,8 @@
           <!-- question container -->
 
           <div class="bg-white p-5">
-            {{ currentQuestion.question }}
+            <!-- {{ currentQuestion.question }} -->
+            {{ formattedQuestion }}
           </div>
         </div>
 
@@ -101,41 +106,22 @@ export default {
       answer: 1,
       choices: [],
     });
-    const questions = [
-      {
-        question:
-          "Which programming language shares its name with an island in Indonesia?",
-        answer: 1,
-        choices: ["Java", "Python", "C", "Jakarta"],
-      },
-      {
-        question: "On Twitter, what is the character limit for a Tweet?",
-        answer: 3,
-        choices: ["120", "160", "140", "100"],
-      },
-      {
-        question: "What does the 'MP' stand for in MP3?",
-        answer: 4,
-        choices: [
-          "Music Player",
-          "Multi Pass",
-          "Micro Point",
-          "Moving Picture",
-        ],
-      },
-    ];
+    let percentageScore = ref(0);
+    const questions = [];
     const loadQuestion = () => {
       canClick = true;
       // Check if there are more questions to load
-      if (questions.length > questionCounter.value) {
+      if (questions.value.length > questionCounter.value) {
+        //값이 바뀔 때 value 넣기
         // load question
         timer.value = 100;
-        currentQuestion.value = questions[questionCounter.value];
+        currentQuestion.value = questions.value[questionCounter.value];
         console.log("Current questions", currentQuestion.value);
         questionCounter.value++;
       } else {
         // no more questions
-        endOfQuiz.value = true;
+        // endOfQuiz.value = true;
+        onQuizEnd();
         console.log("Out of questions");
       }
     };
@@ -183,20 +169,85 @@ export default {
         console.log("Out of questions");
       }
     };
-    const countDwonTimer = function () {
+    const countDownTimer = function () {
       let interVal = setInterval(() => {
         if (timer.value > 0) {
           timer.value--;
         } else {
           console.log("timer is up");
+          onQuizEnd();
           clearInterval(interVal);
         }
       }, 150);
     };
+
+    const fetchQuestionsFromServer = async function () {
+      console.log("fetch questions from server");
+      fetch("https://opentdb.com/api.php?amount=10&category=18")
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          // map json to fit our own arrangement
+          // console.log("data.results", data.results);
+          const newQuestions = data.results.map((serverQuestion) => {
+            const arrangedQuestion = {
+              question: serverQuestion.question,
+              choices: "",
+              answer: "",
+            };
+            // console.log("arrangedQuestion", arrangedQuestion);
+            const choices = serverQuestion.incorrect_answers;
+            arrangedQuestion.answer = Math.floor(Math.random() * 4 + 1);
+            choices.splice(
+              arrangedQuestion.answer - 1,
+              0,
+              serverQuestion.correct_answer
+            );
+            arrangedQuestion.choices = choices;
+            return arrangedQuestion;
+          });
+          console.log("new formatted questions", newQuestions);
+          questions.value = newQuestions;
+          console.log("questions", questions);
+          questions.length = questions.value.length;
+          console.log("questions 길이", questions.value.length);
+          loadQuestion();
+          countDownTimer();
+        });
+    };
+
+    const onQuizEnd = function () {
+      //calculate the percentage
+      percentageScore.value = (score.value / 100) * 100;
+      //stop timer
+      timer.value = 0;
+      //show overlay
+      endOfQuiz.value = true;
+    };
+
+    const onQuizStart = function () {
+      //set default value
+      canClick = true;
+      timer.value = 100;
+      endOfQuiz.value = false;
+      questionCounter.value = 0;
+      score.value = 0;
+      currentQuestion.value = {
+        question: "",
+        answer: 1,
+        choices: [],
+      };
+      percentageScore.value = 0;
+      questions.value = [];
+
+      //fetch question from server
+      fetchQuestionsFromServer();
+    };
+
     onMounted(() => {
       // onQuizStart();
-      loadQuestion();
-      countDwonTimer();
+      fetchQuestionsFromServer();
     });
     return {
       timer,
@@ -208,7 +259,33 @@ export default {
       onOptionClicked,
       optionChosen,
       endOfQuiz,
+      onQuizEnd,
+      percentageScore,
+      onQuizStart,
     };
+  },
+  computed: {
+    formattedQuestion() {
+      let entities = {
+        amp: "&",
+        apos: "'",
+        "#x27": "'",
+        "#x2F": "/",
+        "#39": "'",
+        "#47": "/",
+        lt: "<",
+        gt: ">",
+        nbsp: " ",
+        quot: '"',
+        "#039": "'",
+      };
+      return this.currentQuestion.question.replace(
+        /&([^;]+);/gm,
+        function (match, entity) {
+          return entities[entity] || match;
+        }
+      );
+    },
   },
   components: {
     QuizCompleteOverlay,
