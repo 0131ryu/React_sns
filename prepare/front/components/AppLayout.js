@@ -41,8 +41,8 @@ const items = [
 ];
 
 const AppLayout = ({ children }) => {
-  const { isLoggedIn } = useSelector((state) => state.user);
-  console.log("isLoggedIn", isLoggedIn);
+  const { me } = useSelector((state) => state.user);
+  console.log("me", me);
 
   return (
     <div>
@@ -51,7 +51,7 @@ const AppLayout = ({ children }) => {
 
       <Row gutter={8}>
         <Col xs={24} md={6}>
-          {isLoggedIn ? <UserProfile /> : <LoginForm />}
+          {me ? <UserProfile /> : <LoginForm />}
           왼쪽 메뉴
         </Col>
         <Col xs={24} md={12}>
