@@ -8,12 +8,15 @@ import {
   HeartTwoTone,
 } from "@ant-design/icons";
 import { Card, Popover, Button, Avatar, List, Comment } from "antd";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import PostImages from "./PostImages";
 import CommentForm from "./CommentForm";
 import PostCardContent from "./PostCardContent";
+import { REMOVE_POST_REQUEST } from "../reducers/post";
 
 const PostCard = ({ post }) => {
+  const dispatch = useDispatch();
+  const { removePostLoading } = useSelector((state) => state.post);
   const [liked, setLiked] = useState(false);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
   const onToggleLike = useCallback(() => {
@@ -24,6 +27,13 @@ const PostCard = ({ post }) => {
   });
 
   const id = useSelector((state) => state.user.me?.id);
+
+  const onRemovePost = useCallback(() => {
+    dispatch({
+      type: REMOVE_POST_REQUEST,
+      data: post.id,
+    });
+  }, []);
 
   return (
     <div>
@@ -44,12 +54,19 @@ const PostCard = ({ post }) => {
           <MessageOutlined key="comment" onClick={onToggleComment} />,
           <Popover
             key="more"
-            contnet={
+            content={
               <Button.Group>
+                {/* 로그인 했고  작성자 아이디랑  내아이디랑 같으면 수정 가능  */}
                 {id && post.User.id === id ? (
                   <>
                     <Button>수정</Button>
-                    <Button type="danger">삭제</Button>
+                    <Button
+                      type="danger"
+                      loading={removePostLoading}
+                      onClick={onRemovePost}
+                    >
+                      삭제
+                    </Button>
                   </>
                 ) : (
                   <Button>신고</Button>
