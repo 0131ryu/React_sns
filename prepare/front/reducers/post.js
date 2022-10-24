@@ -4,48 +4,52 @@ import { faker } from "@faker-js/faker";
 
 export const initialState = {
   mainPosts: [
-    {
-      id: 1,
-      User: {
-        id: 1,
-        nickname: "제로초",
-      },
-      content: "첫 번째 게시글 #익스포트 #테스트",
-      Images: [
-        {
-          id: shortId.generate(),
-          src: "https://bookthumb-phinf.pstatic.net/cover/137/995/13799585.jpg?udate=20180726",
-        },
-        {
-          id: shortId.generate(),
-          src: "https://gimg.gilbut.co.kr/book/BN001958/rn_view_BN001958.jpg",
-        },
-        {
-          id: shortId.generate(),
-          src: "https://gimg.gilbut.co.kr/book/BN001998/rn_view_BN001998.jpg",
-        },
-      ],
-      Comments: [
-        {
-          id: shortId.generate(),
-          User: {
-            id: shortId.generate(),
-            nickname: "nero",
-          },
-          content: "우와 개정판이 나왔군요~",
-        },
-        {
-          id: shortId.generate(),
-          User: {
-            id: shortId.generate(),
-            nickname: "hero",
-          },
-          content: "얼른 사고싶어요~",
-        },
-      ],
-    },
+    // {
+    //   id: 1,
+    //   User: {
+    //     id: 1,
+    //     nickname: "제로초",
+    //   },
+    //   content: "첫 번째 게시글 #익스포트 #테스트",
+    //   Images: [
+    //     {
+    //       id: shortId.generate(),
+    //       src: "https://bookthumb-phinf.pstatic.net/cover/137/995/13799585.jpg?udate=20180726",
+    //     },
+    //     {
+    //       id: shortId.generate(),
+    //       src: "https://gimg.gilbut.co.kr/book/BN001958/rn_view_BN001958.jpg",
+    //     },
+    //     {
+    //       id: shortId.generate(),
+    //       src: "https://gimg.gilbut.co.kr/book/BN001998/rn_view_BN001998.jpg",
+    //     },
+    //   ],
+    //   Comments: [
+    //     {
+    //       id: shortId.generate(),
+    //       User: {
+    //         id: shortId.generate(),
+    //         nickname: "nero",
+    //       },
+    //       content: "우와 개정판이 나왔군요~",
+    //     },
+    //     {
+    //       id: shortId.generate(),
+    //       User: {
+    //         id: shortId.generate(),
+    //         nickname: "hero",
+    //       },
+    //       content: "얼른 사고싶어요~",
+    //     },
+    //   ],
+    // },
   ],
   imagePaths: [],
+  hasMorePosts: true,
+  loadPostsLoading: false,
+  loadPostsDone: false,
+  loadPostsError: null,
   addPostLoading: false,
   addPostDone: false,
   addPostError: null,
@@ -57,9 +61,9 @@ export const initialState = {
   addCommentError: null,
 };
 
-//더미테이터
-initialState.mainPosts = initialState.mainPosts.concat(
-  Array(20)
+//무한 스크롤링
+export const generateDummyPost = (number) =>
+  Array(number)
     .fill()
     .map(() => ({
       id: shortId.generate(),
@@ -78,8 +82,14 @@ initialState.mainPosts = initialState.mainPosts.concat(
           content: faker.word.adjective(),
         },
       ],
-    }))
-);
+    }));
+
+//더미테이터
+// initialState.mainPosts = initialState.mainPosts.concat(generateDummyPost(10));
+
+export const LOAD_POSTS_REQUEST = "LOAD_POSTS_REQUEST";
+export const LOAD_POSTS_SUCCESS = "LOAD_POSTS_SUCCESS";
+export const LOAD_POSTS_FAILURE = "LOAD_POSTS_FAILURE";
 
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
@@ -217,7 +227,27 @@ const reducer = (state = initialState, action) => {
         draft.removePostError = action.error;
         break;
       }
-
+      //무한 스크롤링
+      case LOAD_POSTS_REQUEST: {
+        draft.loadPostsLoading = true;
+        draft.loadPostsDone = false;
+        draft.loadPostsError = null;
+        break;
+      }
+      case LOAD_POSTS_SUCCESS: {
+        // action.data.content, postId, userId 받음
+        draft.loadPostsLoading = false;
+        draft.loadPostsDone = true;
+        //더미데이터(action.data) + 기존 데이터
+        draft.mainPosts = action.data.concat(draft.mainPosts);
+        draft.hasMorePosts = draft.mainPosts.length < 50;
+        break;
+      }
+      case LOAD_POSTS_FAILURE: {
+        draft.loadPostsLoading = false;
+        draft.loadPostsError = action.error;
+        break;
+      }
       default:
         break;
     }
