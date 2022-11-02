@@ -19,4 +19,11 @@ export default makeStyles(() => ({
     paddingTop: "0.5rem",
     fontSize: "2.15rem",
   },
+  section: {
+    width: "90vw",
+    mamxWidth: "1170px",
+    margin: "4rem auto",
+    display: "flex",
+    gap: "2rem",
+  },
 }));

@@ -1,12 +1,12 @@
 import { takeLatest, put, fork, call } from "redux-saga/effects";
-import { fetchMovies } from "./api";
-import { getMovies, setMovies } from "./feature/movieSlice";
+import { fetchMovies, fetchMovie } from "./api";
+import { getMovies, setMovies, getMovie, setMovie } from "./feature/movieSlice";
 
-function* onLoadMoiveAsync({ payload }) {
+function* onLoadMoivesAsync({ payload }) {
   try {
-    const movieName = payload;
-    console.log("movieName", movieName);
-    const response = yield call(fetchMovies, movieName);
+    const movieId = payload;
+    console.log("movieId", movieId);
+    const response = yield call(fetchMovies, movieId);
 
     if (response.status === 200) {
       yield put(setMovies({ ...response.data }));
@@ -16,8 +16,26 @@ function* onLoadMoiveAsync({ payload }) {
   }
 }
 
-function* onLoadMovies() {
-  yield takeLatest(getMovies.type, onLoadMoiveAsync);
+function* onLoadMoiveAsync({ payload }) {
+  try {
+    const movieName = payload;
+    console.log("movieName", movieName);
+    const response = yield call(fetchMovie, movieName);
+
+    if (response.status === 200) {
+      yield put(setMovie({ ...response.data }));
+    }
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-export const moviesSagas = [fork(onLoadMovies)];
+function* onLoadMovies() {
+  yield takeLatest(getMovies.type, onLoadMoivesAsync);
+}
+
+function* onLoadMovie() {
+  yield takeLatest(getMovie.type, onLoadMoiveAsync);
+}
+
+export const moviesSagas = [fork(onLoadMovies), fork(onLoadMovie)];
