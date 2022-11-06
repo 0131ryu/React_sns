@@ -1,9 +1,9 @@
 module.exports = (sequelize, DataTypes) => {
-  const Hashtag = sequelize.define(
+  const Image = sequelize.define(
     "Image",
     {
       src: {
-        type: DataTypes.STIRNG(200),
+        type: DataTypes.STRING(200),
         allowNull: false,
       },
     },
@@ -12,6 +12,8 @@ module.exports = (sequelize, DataTypes) => {
       collate: "utf8_general_ci", //이모티콘 포함
     }
   );
-  Image.associate = (db) => {};
+  Image.associate = (db) => {
+    db.Image.belongsTo(db.Post);
+  };
   return Image;
 };
