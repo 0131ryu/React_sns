@@ -150,6 +150,7 @@ const reducer = (state = initialState, action) => {
         // action.data.content, postId, userId 받음
         draft.addPostLoading = false;
         draft.addPostDone = true;
+
         draft.mainPosts.unshift(dummyPost(action.data), ...state.mainPosts);
         break;
       }
