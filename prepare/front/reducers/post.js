@@ -116,25 +116,25 @@ export const addComment = (data) => ({
   data,
 });
 
-const dummyPost = (data) => ({
-  id: data.id,
-  content: data.content,
-  User: {
-    id: 1,
-    nickname: "제로초",
-  },
-  Images: [],
-  Comments: [],
-});
+// const dummyPost = (data) => ({
+//   id: data.id,
+//   content: data.content,
+//   User: {
+//     id: 1,
+//     nickname: "제로초",
+//   },
+//   Images: [],
+//   Comments: [],
+// });
 
-const dummyComment = (data) => ({
-  id: shortId.generate(),
-  content: data,
-  User: {
-    id: 1,
-    nickname: "제로초",
-  },
-});
+// const dummyComment = (data) => ({
+//   id: shortId.generate(),
+//   content: data,
+//   User: {
+//     id: 1,
+//     nickname: "제로초",
+//   },
+// });
 
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
@@ -150,8 +150,8 @@ const reducer = (state = initialState, action) => {
         // action.data.content, postId, userId 받음
         draft.addPostLoading = false;
         draft.addPostDone = true;
-
-        draft.mainPosts.unshift(dummyPost(action.data), ...state.mainPosts);
+        // draft.mainPosts.unshift(dummyPost(action.data), ...state.mainPosts);
+        draft.mainPosts.unshift(action.data);
         break;
       }
       case ADD_POST_FAILURE: {
@@ -167,8 +167,9 @@ const reducer = (state = initialState, action) => {
         break;
       }
       case ADD_COMMENT_SUCCESS: {
-        const post = draft.mainPosts.find((v) => v.id === action.data.postId);
-        post.Comments.unshift(dummyComment(action.data.content));
+        const post = draft.mainPosts.find((v) => v.id === action.data.PostId);
+        // post.Comments.unshift(dummyComment(action.data.content));
+        post.Comments.unshift(action.data);
         draft.addCommentLoading = false;
         draft.addCommentDone = true;
         break;

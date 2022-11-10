@@ -2,6 +2,9 @@ import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "./post";
 import produce from "immer";
 
 export const initialState = {
+  loadUserLoading: false, //유저 정보 가져오기 시도중
+  loadUserDone: false,
+  loadUserError: null,
   logInLoading: false, //로그인 시도 중
   logInDone: false,
   logInError: null,
@@ -24,6 +27,10 @@ export const initialState = {
   signUpData: {},
   loginData: {},
 };
+
+export const LOAD_USER_REQUEST = "LOAD_USER_REQUEST";
+export const LOAD_USER_SUCCESS = "LOAD_USER_SUCCESS";
+export const LOAD_USER_FAILURE = "LOAD_USER_FAILURE";
 
 export const LOG_IN_REQUEST = "LOG_IN_REQUEST";
 export const LOG_IN_SUCCESS = "LOG_IN_SUCCESS";
@@ -78,11 +85,27 @@ export const logoutRequestAction = () => ({
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      case LOAD_USER_REQUEST:
+        draft.loadUserLoading = true;
+        draft.loadUserError = null;
+        draft.loadUserDone = false;
+        break;
+      case LOAD_USER_SUCCESS: {
+        draft.loadUserLoading = false;
+        draft.loadUserDone = true;
+        draft.me = action.data;
+        break;
+      }
+      case LOAD_USER_FAILURE: {
+        draft.loadUserLoading = false;
+        draft.loadUserError = action.error;
+        break;
+      }
       case LOG_IN_REQUEST:
-        console.log("reducer logIn");
-        draft.logInLoading = true;
-        draft.logInError = null;
-        draft.logInDone = false;
+        console.log("reducer loadUser");
+        draft.loadUserLoading = true;
+        draft.loadUserError = null;
+        draft.loadUserDone = false;
         break;
       case LOG_IN_SUCCESS: {
         draft.logInLoading = false;

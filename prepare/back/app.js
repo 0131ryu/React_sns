@@ -27,8 +27,8 @@ passportConfig();
 app.use(morgan("dev"));
 app.use(
   cors({
-    origin: "*",
-    credentials: false,
+    origin: "http://localhost:3060",
+    credentials: true,
   })
 ); //모든 요청에 설정을 넣어줌
 //req.body 사용하기 위함
