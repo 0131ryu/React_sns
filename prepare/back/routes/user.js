@@ -92,7 +92,7 @@ router.post("/logout", isLoggedIn, (req, res) => {
 });
 
 //회원가입
-router.post("/", isNotLoggedIn, async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   try {
     const exUser = await User.findOne({
       where: {
@@ -110,6 +110,24 @@ router.post("/", isNotLoggedIn, async (req, res, next) => {
       password: hashedPassword,
     });
     res.status(201).send("ok");
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+//닉네임 수정
+router.patch("/nickname", isLoggedIn, async (req, res, next) => {
+  try {
+    await User.update(
+      {
+        nickname: req.body.nickname,
+      },
+      {
+        where: { id: req.user.id },
+      }
+    );
+    res.status(200).json({ nickname: req.body.nickname });
   } catch (error) {
     console.error(error);
     next(error);
