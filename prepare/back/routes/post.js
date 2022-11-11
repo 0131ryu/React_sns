@@ -1,5 +1,5 @@
 const express = require("express");
-const { Post, Image, Comment } = require("../models");
+const { Post, Image, Comment, User } = require("../models");
 const { isLoggedIn } = require("./middlewares");
 
 const router = express.Router();
@@ -16,8 +16,16 @@ router.post("/", isLoggedIn, async (req, res, next) => {
         {
           model: Image,
         },
-        { model: Comment },
-        { model: User },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+          ],
+        },
+        { model: User, attributes: ["id", "nickname"] },
       ],
     });
     res.status(201).json(fullPost);
@@ -38,10 +46,19 @@ router.post(`/:postId/comment`, isLoggedIn, async (req, res, next) => {
     }
     const comment = await Comment.create({
       content: req.body.content,
-      PostId: req.params.postId,
+      PostId: parseInt(req.params.postId),
       UserId: req.user.id,
     });
-    res.status(201).json(comment);
+    const fullComment = await Comment.findOne({
+      where: { id: comment.id },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "nickname"],
+        },
+      ],
+    });
+    res.status(201).json(fullComment);
   } catch (error) {
     console.error(error);
     next(error);

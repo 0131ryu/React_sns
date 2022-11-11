@@ -62,27 +62,27 @@ export const initialState = {
 };
 
 //무한 스크롤링
-export const generateDummyPost = (number) =>
-  Array(number)
-    .fill()
-    .map(() => ({
-      id: shortId.generate(),
-      User: {
-        id: shortId.generate(),
-        nickname: faker.internet.userName(),
-      },
-      content: faker.lorem.paragraph(),
-      Images: [{ src: faker.image.cats() }],
-      Comments: [
-        {
-          User: {
-            id: shortId.generate(),
-            nickname: faker.internet.userName(),
-          },
-          content: faker.word.adjective(),
-        },
-      ],
-    }));
+// export const generateDummyPost = (number) =>
+//   Array(number)
+//     .fill()
+//     .map(() => ({
+//       id: shortId.generate(),
+//       User: {
+//         id: shortId.generate(),
+//         nickname: faker.internet.userName(),
+//       },
+//       content: faker.lorem.paragraph(),
+//       Images: [{ src: faker.image.cats() }],
+//       Comments: [
+//         {
+//           User: {
+//             id: shortId.generate(),
+//             nickname: faker.internet.userName(),
+//           },
+//           content: faker.word.adjective(),
+//         },
+//       ],
+//     }));
 
 //더미테이터
 // initialState.mainPosts = initialState.mainPosts.concat(generateDummyPost(10));

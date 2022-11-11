@@ -42,7 +42,7 @@ const items = [
 
 const AppLayout = ({ children }) => {
   const { me } = useSelector((state) => state.user);
-  console.log("me", me);
+  // console.log("me", me);
 
   return (
     <div>

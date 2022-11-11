@@ -58,18 +58,16 @@ function* addPost(action) {
 }
 
 function loadPostsAPI(data) {
-  return axios.get("/api/posts", data);
+  return axios.get("/posts", data);
 }
 
 function* loadPosts(action) {
   try {
-    // const result = yield call(loadPostsAPI, action.data);
-    yield delay(1000);
-    const id = shortId.generate();
+    const result = yield call(loadPostsAPI, action.data);
     yield put({
       type: LOAD_POSTS_SUCCESS,
       //10개의 가짜 데이터
-      data: generateDummyPost(10),
+      data: result.data,
     });
   } catch (err) {
     console.error(err);
@@ -111,13 +109,14 @@ function addCommentAPI(data) {
 
 function* addComment(action) {
   try {
-    // const result = yield call(addCommentAPI, action.data);
+    const result = yield call(addCommentAPI, action.data);
     yield delay(1000);
     yield put({
       type: ADD_COMMENT_SUCCESS,
       data: result.data,
     });
   } catch (err) {
+    console.error(err);
     yield put({
       type: ADD_COMMENT_FAILURE,
       data: err.response.data,
