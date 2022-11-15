@@ -10,9 +10,14 @@ import { LOAD_MY_INFO_REQUEST } from "../reducers/user";
 const Home = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
-  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
-    (state) => state.post
-  );
+  const { mainPosts, hasMorePosts, loadPostsLoading, retweetError } =
+    useSelector((state) => state.post);
+
+  useEffect(() => {
+    if (retweetError) {
+      alert(retweetError);
+    }
+  }, [retweetError]);
 
   useEffect(() => {
     dispatch({
@@ -26,20 +31,15 @@ const Home = () => {
   //스크롤이 내려왔을 때 로딩
   useEffect(() => {
     function onScroll() {
-      //사용자 현재 위치
-      console.log(
-        window.scrollY,
-        document.documentElement.clientHeight,
-        document.documentElement.scrollHeight
-      );
       if (
-        window.scrollY + document.documentElement.clientHeight >
+        window.pageYOffset + document.documentElement.clientHeight >
         document.documentElement.scrollHeight - 300
       ) {
         if (hasMorePosts && !loadPostsLoading) {
-          //한 번에 너무 많이 실행됨
+          const lastId = mainPosts[mainPosts.length - 1]?.id;
           dispatch({
             type: LOAD_POSTS_REQUEST,
+            lastId,
           });
         }
       }
@@ -48,7 +48,7 @@ const Home = () => {
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
-  }, []);
+  }, [hasMorePosts, loadPostsLoading, mainPosts]);
 
   return (
     <AppLayout>

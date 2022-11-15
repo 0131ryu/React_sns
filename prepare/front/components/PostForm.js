@@ -3,7 +3,7 @@ import React, { useCallback, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useInput from "../hooks/useInput";
 import {
-  addPost,
+  addPostDone,
   UPLOAD_IMAGES_REQUEST,
   REMOVE_IMAGE,
   ADD_POST_REQUEST,
@@ -22,9 +22,7 @@ import {
 // };
 
 const PostForm = () => {
-  const { imagePaths, addPostDone, addPostLoading } = useSelector(
-    (state) => state.post
-  );
+  const { imagePaths, addPostDone } = useSelector((state) => state.post);
   const dispatch = useDispatch();
   const [text, onChangeText, setText] = useInput("");
 

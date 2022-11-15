@@ -68,6 +68,9 @@ export const initialState = {
   uploadImagesLoading: false,
   uploadImagesDone: false,
   uploadImagesError: null,
+  retweetLoading: false,
+  retweetDone: false,
+  retweetError: null,
 };
 
 //무한 스크롤링
@@ -129,6 +132,10 @@ export const REMOVE_POST_SUCCESS = "REMOVE_POST_SUCCESS";
 export const REMOVE_POST_FAILURE = "REMOVE_POST_FAILURE";
 
 export const REMOVE_IMAGE = "REMOVE_IMAGE";
+
+export const RETWEET_REQUEST = "RETWEET_REQUEST";
+export const RETWEET_SUCCESS = "RETWEET_SUCCESS";
+export const RETWEET_FAILURE = "RETWEET_FAILURE";
 
 export const addPost = (data) => ({
   type: ADD_POST_REQUEST,
@@ -267,9 +274,8 @@ const reducer = (state = initialState, action) => {
         // action.data.content, postId, userId 받음
         draft.loadPostsLoading = false;
         draft.loadPostsDone = true;
-        //더미데이터(action.data) + 기존 데이터
-        draft.mainPosts = action.data.concat(action.data);
-        draft.hasMorePosts = draft.mainPosts.length === 50;
+        draft.mainPosts = draft.mainPosts.concat(action.data);
+        draft.hasMorePosts = action.data.length === 10;
         break;
       }
       case LOAD_POSTS_FAILURE: {
@@ -336,6 +342,24 @@ const reducer = (state = initialState, action) => {
       }
       case REMOVE_IMAGE: {
         draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data);
+        break;
+      }
+      //retweet
+      case RETWEET_REQUEST: {
+        draft.retweetLoading = true;
+        draft.retweetDone = false;
+        draft.retweetError = null;
+        break;
+      }
+      case RETWEET_SUCCESS: {
+        draft.retweetLoading = false;
+        draft.retweetDone = true;
+        draft.mainPosts.unshift(action.data);
+        break;
+      }
+      case RETWEET_FAILURE: {
+        draft.retweetLoading = false;
+        draft.retweetError = action.error;
         break;
       }
       default:
