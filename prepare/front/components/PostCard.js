@@ -74,7 +74,7 @@ const PostCard = ({ post }) => {
   }, [id]);
 
   return (
-    <div>
+    <div style={{ marginBottom: 20 }}>
       <Card
         cover={post.Images[0] && <PostImages images={post.Images} />}
         actions={[
@@ -88,13 +88,11 @@ const PostCard = ({ post }) => {
           ) : (
             <HeartOutlined key="heart" onClick={onLike} />
           ),
-
           <MessageOutlined key="comment" onClick={onToggleComment} />,
           <Popover
             key="more"
             content={
               <Button.Group>
-                {/* 로그인 했고  작성자 아이디랑  내아이디랑 같으면 수정 가능  */}
                 {id && post.User.id === id ? (
                   <>
                     <Button>수정</Button>
@@ -141,11 +139,6 @@ const PostCard = ({ post }) => {
             description={<PostCardContent postData={post.content} />}
           />
         )}
-        <Card.Meta
-          avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
-          title={post.User.nickname}
-          description={<PostCardContent postData={post.content} />}
-        />
       </Card>
       {commentFormOpened && (
         <div>
@@ -166,8 +159,6 @@ const PostCard = ({ post }) => {
           />
         </div>
       )}
-      {/* <CommentForm />
-      <Comments /> */}
     </div>
   );
 };
