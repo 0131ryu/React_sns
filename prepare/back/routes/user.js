@@ -7,6 +7,7 @@ const router = express.Router();
 
 //내 정보 매번 불러오기
 router.get("/", async (req, res, next) => {
+  console.log(req.headers);
   // GET /user
   try {
     if (req.user) {
