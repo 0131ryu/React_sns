@@ -51,8 +51,6 @@ const PostCard = ({ post }) => {
     setCommentFormOpened((prev) => !prev);
   });
 
-  const liked = post.Likers.find((v) => v.id === id);
-
   const onRemovePost = useCallback(() => {
     if (!id) {
       return alert("로그인이 필요합니다.");
@@ -72,6 +70,8 @@ const PostCard = ({ post }) => {
       data: post.id,
     });
   }, [id]);
+
+  const liked = post.Likers.find((v) => v.id === id);
 
   return (
     <div style={{ marginBottom: 20 }}>

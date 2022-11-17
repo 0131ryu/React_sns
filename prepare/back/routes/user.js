@@ -7,7 +7,6 @@ const router = express.Router();
 
 //내 정보 매번 불러오기
 router.get("/", async (req, res, next) => {
-  console.log(req.headers);
   // GET /user
   try {
     if (req.user) {
@@ -36,6 +35,48 @@ router.get("/", async (req, res, next) => {
       res.status(200).json(fullUserWithoutPassword);
     } else {
       res.status(200).json(null);
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+//특정 사용자 불러오기
+router.get("/:userId", async (req, res, next) => {
+  // GET /user
+  try {
+    const fullUserWithoutPassword = await User.findOne({
+      where: { id: req.params.userId },
+      attributes: {
+        exclude: ["password"],
+      },
+      include: [
+        {
+          model: Post,
+          attributes: ["id"],
+        },
+        {
+          model: User,
+          as: "Followings",
+          attributes: ["id"],
+        },
+        {
+          model: User,
+          as: "Followers",
+          attributes: ["id"],
+        },
+      ],
+    });
+
+    if (fullUserWithoutPassword) {
+      const data = fullUserWithoutPassword.toJSON();
+      data.Posts = data.Posts.length;
+      data.Followers = data.Followers.length;
+      data.Followings = data.Followings.length; //사용자의 아이디 노출되지 않게 함
+      res.status(200).json(fullUserWithoutPassword);
+    } else {
+      res.status(404).json("존재하지 않는 사용자입니다.");
     }
   } catch (error) {
     console.error(error);
