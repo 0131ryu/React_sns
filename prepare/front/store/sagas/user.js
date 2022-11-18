@@ -39,6 +39,7 @@ function loadMyInfoAPI(data) {
 
 function* loadMyInfo() {
   try {
+    console.log("loadMyInfo saga");
     const result = yield call(loadMyInfoAPI);
     yield put({
       type: LOAD_MY_INFO_SUCCESS,
