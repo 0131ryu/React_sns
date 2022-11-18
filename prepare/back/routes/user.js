@@ -43,48 +43,6 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-//특정 사용자 불러오기
-router.get("/:userId", async (req, res, next) => {
-  // GET /user
-  try {
-    const fullUserWithoutPassword = await User.findOne({
-      where: { id: req.params.userId },
-      attributes: {
-        exclude: ["password"],
-      },
-      include: [
-        {
-          model: Post,
-          attributes: ["id"],
-        },
-        {
-          model: User,
-          as: "Followings",
-          attributes: ["id"],
-        },
-        {
-          model: User,
-          as: "Followers",
-          attributes: ["id"],
-        },
-      ],
-    });
-
-    if (fullUserWithoutPassword) {
-      const data = fullUserWithoutPassword.toJSON();
-      data.Posts = data.Posts.length;
-      data.Followers = data.Followers.length;
-      data.Followings = data.Followings.length; //사용자의 아이디 노출되지 않게 함
-      res.status(200).json(fullUserWithoutPassword);
-    } else {
-      res.status(404).json("존재하지 않는 사용자입니다.");
-    }
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
 //로그인
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
@@ -219,6 +177,7 @@ router.get("/followers", isLoggedIn, async (req, res, next) => {
       res.status(403).send("없는 사람을 찾으려고 하시네요?");
     }
     const followers = await user.getFollowers({
+      limit: parseInt(req.query.limit, 10),
       attributes: ["id", "nickname"],
     });
     // const followers = await user.getFollowers({
@@ -242,6 +201,7 @@ router.get("/followings", isLoggedIn, async (req, res, next) => {
     }
 
     const followings = await user.getFollowings({
+      limit: parseInt(req.query.limit, 10),
       attributes: ["id", "nickname"],
     });
 
@@ -325,6 +285,48 @@ router.get("/:userId/posts", async (req, res, next) => {
       ],
     });
     res.status(200).json(posts);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+//특정 사용자 불러오기
+router.get("/:userId", async (req, res, next) => {
+  // GET /user
+  try {
+    const fullUserWithoutPassword = await User.findOne({
+      where: { id: req.params.userId },
+      attributes: {
+        exclude: ["password"],
+      },
+      include: [
+        {
+          model: Post,
+          attributes: ["id"],
+        },
+        {
+          model: User,
+          as: "Followings",
+          attributes: ["id"],
+        },
+        {
+          model: User,
+          as: "Followers",
+          attributes: ["id"],
+        },
+      ],
+    });
+
+    if (fullUserWithoutPassword) {
+      const data = fullUserWithoutPassword.toJSON();
+      data.Posts = data.Posts.length;
+      data.Followers = data.Followers.length;
+      data.Followings = data.Followings.length; //사용자의 아이디 노출되지 않게 함
+      res.status(200).json(fullUserWithoutPassword);
+    } else {
+      res.status(404).json("존재하지 않는 사용자입니다.");
+    }
   } catch (error) {
     console.error(error);
     next(error);

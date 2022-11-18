@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import Link from "next/link";
@@ -8,6 +8,8 @@ const { Search } = Input;
 import UserProfile from "./UserProfile";
 import LoginForm from "./LoginForm";
 import { createGlobalStyle } from "styled-components";
+import useInput from "../hooks/useInput";
+import Router from "next/router";
 
 const Global = createGlobalStyle`
 .ant-row {
@@ -28,26 +30,36 @@ const SearchInput = styled(Search)`
   vertical-align: "middle";
 `;
 
-const onSearch = (value) => console.log(value);
-
-const items = [
-  { label: <Link href="/">노드버드</Link>, key: "item-1" },
-  { label: <Link href="/profile">프로필</Link>, key: "item-2" },
-  {
-    label: <SearchInput placeholder="검색하기" onSearch={onSearch} />,
-    key: "item-3",
-  },
-  { label: <Link href="/signup">회원가입</Link>, key: "item-4" },
-];
-
 const AppLayout = ({ children }) => {
   const { me } = useSelector((state) => state.user);
-  // console.log("me", me);
+  const [searchInput, onChangeSearchInput] = useInput("");
+
+  const onSearch = useCallback(() => {
+    Router.push(`/hashtag/${searchInput}`);
+  }, [searchInput]);
 
   return (
     <div>
       <Global />
-      <Menu items={items} mode="horizontal" />
+      <Menu
+        items={[
+          { label: <Link href="/">노드버드</Link>, key: "item-1" },
+          { label: <Link href="/profile">프로필</Link>, key: "item-2" },
+          {
+            label: (
+              <SearchInput
+                enterButton
+                value={searchInput}
+                onChange={onChangeSearchInput}
+                onSearch={onSearch}
+              />
+            ),
+            key: "/search",
+          },
+          { label: <Link href="/signup">회원가입</Link>, key: "item-4" },
+        ]}
+        mode="horizontal"
+      />
 
       <Row gutter={8}>
         <Col xs={24} md={6}>
