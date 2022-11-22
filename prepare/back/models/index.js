@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
 const comment = require("./comment");
-const hashtag = require("./hashtag");
+const hashtag = require("./hashTag");
 const image = require("./image");
 const post = require("./post");
 const user = require("./user");
