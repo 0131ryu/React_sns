@@ -39,7 +39,7 @@ if (process.env.NODE_ENV === "production") {
 
 app.use(
   cors({
-    origin: ["http://localhost:3060", "nodebird.com"],
+    origin: ["http://localhost:3060", "nodebird.com", "http://54.180.95.119"],
     credentials: true,
   })
 ); //모든 요청에 설정을 넣어줌
