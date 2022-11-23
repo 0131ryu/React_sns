@@ -1,6 +1,7 @@
 import { Form, Input, Button } from "antd";
 import React, { useCallback, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { backUrl } from "../config/config";
 import useInput from "../hooks/useInput";
 import {
   addPostDone,
@@ -103,11 +104,7 @@ const PostForm = () => {
       <div>
         {imagePaths.map((v, i) => (
           <div key={v} style={{ display: "inline-block" }}>
-            <img
-              src={`http://localhost:3065/${v}`}
-              style={{ width: "200px" }}
-              alt={v}
-            />
+            <img src={`${backUrl}/${v}`} style={{ width: "200px" }} alt={v} />
             <div>
               <Button onClick={onRemoveImage(i)}>제거</Button>
             </div>
