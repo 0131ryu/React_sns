@@ -6,6 +6,8 @@ const passport = require("passport");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
 const path = require("path");
+const hpp = require("hpp");
+const helmet = require("helmet");
 
 const postRouter = require("./routes/post");
 const postsRouter = require("./routes/posts");
@@ -27,10 +29,17 @@ db.sequelize
 
 passportConfig();
 
-app.use(morgan("dev"));
+if (process.env.NODE_ENV === "production") {
+  app.use(morgan("combined"));
+  app.use(hpp());
+  app.use(helmet());
+} else {
+  app.use(morgan("dev"));
+}
+
 app.use(
   cors({
-    origin: "http://localhost:3060",
+    origin: ["http://localhost:3060", "nodebird.com"],
     credentials: true,
   })
 ); //모든 요청에 설정을 넣어줌
