@@ -33,16 +33,21 @@ if (process.env.NODE_ENV === "production") {
   app.use(morgan("combined"));
   app.use(hpp());
   app.use(helmet());
+  app.use(
+    cors({
+      origin: "http://seongong.site",
+      credentials: true,
+    })
+  );
 } else {
   app.use(morgan("dev"));
+  app.use(
+    cors({
+      origin: true,
+      credentials: true,
+    })
+  );
 }
-
-app.use(
-  cors({
-    origin: ["http://localhost:3060", "http://seongong.site"],
-    credentials: true,
-  })
-); //모든 요청에 설정을 넣어줌
 
 app.use("/", express.static(path.join(__dirname, "uploads"))); //업로드 폴더
 
