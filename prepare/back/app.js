@@ -39,7 +39,7 @@ if (process.env.NODE_ENV === "production") {
 
 app.use(
   cors({
-    origin: ["http://localhost:3060", "nodebird.com", "http://54.180.95.119"],
+    origin: ["http://localhost:3060", "http://seongong.site"],
     credentials: true,
   })
 ); //모든 요청에 설정을 넣어줌
@@ -55,6 +55,11 @@ app.use(
     saveUninitialized: false,
     resave: false,
     secret: process.env.COOKIE_SECRET,
+    cookie: {
+      httpOnly: true,
+      secure: false,
+      domain: process.env.NODE_ENV === "production" && ".seongong.site",
+    },
   })
 );
 app.use(passport.initialize());
