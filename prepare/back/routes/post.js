@@ -18,7 +18,7 @@ AWS.config.update({
 const upload = multer({
   storage: multerS3({
     s3: new AWS.S3(),
-    bucket: "nodebird-seongong",
+    bucket: "nodebird-seongong", //이 부분 주의할 것
     key(req, file, cb) {
       cb(null, `original/${Date.now()}_${path.basename(file.originalname)}`);
     },
