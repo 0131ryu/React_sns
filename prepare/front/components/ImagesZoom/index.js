@@ -26,7 +26,7 @@ const ImagesZoom = ({ images, onClose }) => {
         <div>
           <Slick
             initialSlide={0}
-            afterChange={(slide) => setCurrentSlide(slide)}
+            beforeChange={(slide, newSlide) => setCurrentSlide(newSlide)}
             infinite
             arrows={false}
             slidesToShow={1}
@@ -34,7 +34,10 @@ const ImagesZoom = ({ images, onClose }) => {
           >
             {images.map((v) => (
               <ImgWrapper key={v.src}>
-                <img src={`${v.src}`} alt={v.src} />
+                <img
+                  src={`${v.src.replace(/\/thumb\//, "/original/")}`}
+                  alt={v.src}
+                />
               </ImgWrapper>
             ))}
           </Slick>
