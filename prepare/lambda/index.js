@@ -9,7 +9,7 @@ exports.handler = async (event, context, callback) => {
   console.log(Bucket, Key);
   const filename = Key.split("/")[Key.split("/").length - 1];
   const ext = Key.split(".")[Key.split(".").length - 1].toLowerCase();
-  const requiredFormat = (ext = "jpg" ? "jpeg" : ext);
+  const requireFormat = ext === "jpg" ? "jpeg" : ext;
   console.log("filename", filename, "ext", ext);
 
   try {
@@ -17,7 +17,7 @@ exports.handler = async (event, context, callback) => {
     console.log("original", s3Object.Body.length);
     const resizedImage = await sharp(s3Object.Body)
       .resize(200, 200, { fit: "inside" })
-      .toFormat(requiredFormat)
+      .toFormat(requireFormat)
       .toBuffer();
     await s3
       .putObject({

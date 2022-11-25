@@ -3,4 +3,4 @@ nodebird.pem
 /front/.next
 /back/node_modules
 /back/.env
-/lamda/node_modules
+/lambda/node_modules
