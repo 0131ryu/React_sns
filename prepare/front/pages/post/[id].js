@@ -34,11 +34,11 @@ const Post = () => {
           content={
             singlePost.Images[0]
               ? singlePost.Images[0].src
-              : "https://nodebird.com/favicon.ico"
+              : "http://seongong.site/favicon.ico"
           }
         />
         {/* favicon 설정 후 ctrl + shift + R */}
-        <meta property="og:url" content={`https://nodebird.com/post/${id}`} />
+        <meta property="og:url" content={`http://seongong.site/post/${id}`} />
       </Head>
       <PostCard post={singlePost} />
     </AppLayout>
