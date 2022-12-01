@@ -16,7 +16,7 @@ const UserProfile = () => {
       <Card
         actions={[
           <div key="twit">
-            <Link href={`/user/${me.id}`} prefetch={false}>
+            <Link href={`/user/${me.id}`}>
               <a>
                 짹짹 <br />
                 {me.Posts.length}
@@ -24,7 +24,7 @@ const UserProfile = () => {
             </Link>
           </div>,
           <div key="followings">
-            <Link href={`/profile`} prefetch={false}>
+            <Link href={`/profile`}>
               <a>
                 팔로잉 <br />
                 {me.Followings.length}
@@ -32,7 +32,7 @@ const UserProfile = () => {
             </Link>
           </div>,
           <div key="followers">
-            <Link href={`/profile`} prefetch={false}>
+            <Link href={`/profile`}>
               <a>
                 팔로워 <br />
                 {me.Followers.length}
@@ -43,7 +43,7 @@ const UserProfile = () => {
       >
         <Card.Meta
           avatar={
-            <Link href={`/user/${me.id}`}>
+            <Link href={`/user/${me.id}`} prefetch={false}>
               <a>
                 <Avatar>{me.nickname[0]}</Avatar>
               </a>
