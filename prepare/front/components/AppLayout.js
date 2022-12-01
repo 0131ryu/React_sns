@@ -44,7 +44,14 @@ const AppLayout = ({ children }) => {
       <Menu
         items={[
           { label: <Link href="/">노드버드</Link>, key: "item-1" },
-          { label: <Link href="/profile">프로필</Link>, key: "item-2" },
+          {
+            label: (
+              <Link href="/profile" prefetch={false}>
+                프로필
+              </Link>
+            ),
+            key: "item-2",
+          },
           {
             label: (
               <SearchInput

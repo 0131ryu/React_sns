@@ -17,6 +17,7 @@ import {
   LIKE_POST_REQUEST,
   UNLIKE_POST_REQUEST,
   RETWEET_REQUEST,
+  UPDATE_POST_REQUEST,
 } from "../reducers/post";
 import FollowButton from "../components/FollowButton";
 import Link from "next/link";
@@ -25,7 +26,30 @@ const PostCard = ({ post }) => {
   const dispatch = useDispatch();
   const { removePostLoading } = useSelector((state) => state.post);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+
   const id = useSelector((state) => state.user.me?.id);
+
+  const onClickUpdate = useCallback(() => {
+    setEditMode(true);
+  }, []);
+
+  const onChangePost = useCallback(
+    (editText) => () => {
+      dispatch({
+        type: UPDATE_POST_REQUEST,
+        data: {
+          PostId: post.id,
+          content: editText,
+        },
+      });
+    },
+    [post]
+  );
+
+  const onCancelUpdate = useCallback(() => {
+    setEditMode(fale);
+  }, []);
 
   const onLike = useCallback(() => {
     if (!id) {
@@ -95,7 +119,9 @@ const PostCard = ({ post }) => {
               <Button.Group>
                 {id && post.User.id === id ? (
                   <>
-                    <Button>수정</Button>
+                    {!post.RetweetId && (
+                      <Button onClick={onClickUpdate}>수정</Button>
+                    )}
                     <Button
                       type="danger"
                       loading={removePostLoading}
@@ -135,7 +161,14 @@ const PostCard = ({ post }) => {
                 </Link>
               }
               title={post.Retweet.User.nickname}
-              description={<PostCardContent postData={post.Retweet.content} />}
+              description={
+                <PostCardContent
+                  editMode={editMode}
+                  onChangePost={onChangePost}
+                  onCancelUpdate={onCancelUpdate}
+                  postData={post.Retweet.content}
+                />
+              }
             />
           </Card>
         ) : (
@@ -148,7 +181,13 @@ const PostCard = ({ post }) => {
               </Link>
             }
             title={post.User.nickname}
-            description={<PostCardContent postData={post.content} />}
+            description={
+              <PostCardContent
+                postData={post.content}
+                onChangePost={onChangePost}
+                onCancelUpdate={onCancelUpdate}
+              />
+            }
           />
         )}
       </Card>

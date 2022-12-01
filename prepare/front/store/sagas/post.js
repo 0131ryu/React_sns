@@ -45,6 +45,8 @@ import {
   LOAD_USER_POSTS_REQUEST,
   LOAD_USER_POSTS_FAILURE,
   LOAD_USER_POSTS_SUCCESS,
+  UPDATE_POST_REQUEST,
+  UPDATE_POST_SUCCESS,
 } from "../../reducers/post";
 // import shortId, { generate } from "shortid";
 
@@ -188,6 +190,26 @@ function* removePost(action) {
   }
 }
 
+function updatePostAPI(data) {
+  //data: post.id
+  return axios.patch(`/post/${data.PostId}`, data);
+}
+function* updatePost(action) {
+  try {
+    const result = yield call(updatePostAPI, action.data);
+    yield put({
+      type: UPDATE_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: UPDATE_POST_SUCCESS,
+      error: err.response.data,
+    });
+  }
+}
+
 function addCommentAPI(data) {
   return axios.post(`/post/${data.postId}/comment`, data);
 }
@@ -302,6 +324,10 @@ function* watchRemovePost() {
   yield takeLatest(REMOVE_POST_REQUEST, removePost);
 }
 
+function* watchUpdatePost() {
+  yield takeLatest(UPDATE_POST_REQUEST, updatePost);
+}
+
 function* watchLoadUserPosts() {
   yield takeLatest(LOAD_USER_POSTS_REQUEST, loadUserPosts);
 }
@@ -343,6 +369,7 @@ export default function* postSaga() {
     fork(watchAddPost),
     fork(watchAddComment),
     fork(watchRemovePost),
+    fork(watchUpdatePost),
     fork(watchLoadPosts),
     fork(watchLoadPost),
     fork(watchLoadUserPosts),

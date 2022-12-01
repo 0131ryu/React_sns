@@ -66,6 +66,9 @@ export const initialState = {
   removePostLoading: false,
   removePostDone: false,
   removePostError: null,
+  updatePostLoading: false,
+  updatePostDone: false,
+  updatePostError: null,
   addCommentLoading: false,
   addCommentDone: false,
   addCommentError: null,
@@ -138,6 +141,10 @@ export const REMOVE_POST_OF_ME = "REMOVE_POST_OF_ME";
 export const REMOVE_POST_REQUEST = "REMOVE_POST_REQUEST";
 export const REMOVE_POST_SUCCESS = "REMOVE_POST_SUCCESS";
 export const REMOVE_POST_FAILURE = "REMOVE_POST_FAILURE";
+
+export const UPDATE_POST_REQUEST = "UPDATE_POST_REQUEST";
+export const UPDATE_POST_SUCCESS = "UPDATE_POST_SUCCESS";
+export const UPDATE_POST_FAILURE = "UPDATE_POST_FAILURE";
 
 export const REMOVE_IMAGE = "REMOVE_IMAGE";
 
@@ -277,6 +284,26 @@ const reducer = (state = initialState, action) => {
       case REMOVE_POST_FAILURE: {
         draft.removePostLoading = false;
         draft.removePostError = action.error;
+        break;
+      }
+      //업데이트
+      case UPDATE_POST_REQUEST: {
+        draft.updatePostLoading = true;
+        draft.updatePostDone = false;
+        draft.updatePostError = null;
+        break;
+      }
+      case UPDATE_POST_SUCCESS: {
+        // action.data.content, postId, userId 받음
+        draft.updatePostLoading = false;
+        draft.updatePostDone = true;
+        draft.mainPosts.find((v) => v.id === action.data.PostId).content =
+          action.data.content;
+        break;
+      }
+      case UPDATE_POST_FAILURE: {
+        draft.updatePostLoading = false;
+        draft.updatePostError = action.error;
         break;
       }
       //무한 스크롤링
