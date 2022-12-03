@@ -1,1 +1,4 @@
-export const backUrl = "http://api.seongong.site";
+export const backUrl =
+  process.env.NODE_ENV === "production"
+    ? "https://api.seongong.site"
+    : "http://localhost:3065";
